@@ -1,0 +1,38 @@
+services:
+  web:
+    build: .             
+    container_name: servidor_fichas
+    ports:
+      - "${APP_PORT}:80"
+    volumes:
+      - ./:/var/www/html/
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+
+  db:
+    image: mysql:5.7
+    container_name: db_fichas
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: gestor_db_fichas
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
+    depends_on:
+      - db
+
+volumes:
+  db_data:

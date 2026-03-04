@@ -1,0 +1,79 @@
+<?php
+require_once('Conexion.php');
+
+class BancomerHelper
+{
+
+    private static $valores_letras = [
+        "A" => 1,
+        "B" => 2,
+        "C" => 3,
+        "D" => 4,
+        "E" => 5,
+        "F" => 6,
+        "G" => 7,
+        "H" => 8,
+        "I" => 9,
+        "J" => 1,
+        "K" => 2,
+        "L" => 3,
+        "M" => 4,
+        "N" => 5,
+        "O" => 6,
+        "P" => 7,
+        "Q" => 7,
+        "R" => 9,
+        "S" => 1,
+        "T" => 2,
+        "U" => 3,
+        "V" => 4,
+        "W" => 5,
+        "X" => 6,
+        "Y" => 7,
+        "Z" => 8
+    ];
+
+    public static function generarReferencia($concepto, $matricula)
+    {
+        if (strlen($matricula) < 8)
+            return "ERROR_MATRICULA";
+
+        $anio = substr($matricula, 0, 2);
+        $resto = substr($matricula, 4);
+
+        $referencia_base = $concepto . $anio . $resto;
+
+        $numeros = [];
+        for ($i = 0; $i < strlen($referencia_base); $i++) {
+            $char = strtoupper($referencia_base[$i]);
+            $numeros[] = is_numeric($char) ? intval($char) : (self::$valores_letras[$char] ?? 0);
+        }
+
+        $suma = 0;
+
+        $val_inicial = $numeros[1];
+        if ($val_inicial > 9) {
+            $suma += floor($val_inicial / 10) + ($val_inicial % 10);
+        } else {
+            $suma += $val_inicial;
+        }
+
+        for ($i = 1; $i < count($numeros); $i++) {
+            $factor = ($i % 2 != 0) ? 2 : 1;
+
+            $resultado = $numeros[$i] * $factor;
+
+            if ($resultado > 9) {
+                $suma += floor($resultado / 10) + ($resultado % 10);
+            } else {
+                $suma += $resultado;
+            }
+        }
+
+        $residuo = $suma % 10;
+        $verificador = ($residuo == 0) ? 0 : (10 - $residuo);
+
+        return $referencia_base . $verificador;
+    }
+}
+?>
