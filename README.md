@@ -19,7 +19,7 @@ PHP + MySQL + phpMyAdmin project using Docker.
 
 ```powershell
 git clone <URL_DEL_REPO>
-cd fichas-uno
+cd uno-slips
 ```
 
 ## 2) Create `.env` file
