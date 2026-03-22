@@ -10,6 +10,7 @@ require_once('../../../config.php');
 require_once(ROOT_PATH . 'vendor/autoload.php');
 require_once(ROOT_PATH . 'includes/IdiomaHelper.php');
 require_once(ROOT_PATH . 'includes/Conexion.php');
+require_once(ROOT_PATH . 'includes/CalculadoraPrecios.php');
 
 $con = obtenerConexion();
 
@@ -81,7 +82,8 @@ if (!$datosAlumno) {
     ');
 }
 
-$montoFormato = '$' . $datosFicha['monto'] . ' MXN';
+$montoFinal = CalculadoraPrecios::calcularMonto($datosAlumno, $datosFicha);
+$montoFormato = '$' . number_format($montoFinal, 2) . ' MXN';
 
 $referencia = IdiomaHelper::generarReferencia($datosFicha['concepto'], $matricula);
 mysqli_close($con);
@@ -169,7 +171,7 @@ $html = '
         </td>
         <td width="25%" align="right">
             <span class="lbl">Importe</span><br>
-            <span class="val ' . ($montoFinal == 0 ? 'beca' : '') . '">' . $montoFormato . '</span>
+            <span class="val">' . $montoFormato . '</span>
         </td>
     </tr>
 </table>
@@ -190,7 +192,7 @@ $html = '
         </td>
         <td width="25%" align="right">
             <span class="lbl">Importe</span><br>
-            <span class="val ' . ($montoFinal == 0 ? 'beca' : '') . '">' . $montoFormato . '</span>
+            <span class="val">' . $montoFormato . '</span>
         </td>
     </tr>
 </table>

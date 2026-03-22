@@ -1,21 +1,22 @@
 <?php
 class CalculadoraPrecios
 {
-
-    public static function calcularMonto($alumno, $montoBase)
+    public static function calcularMonto($alumno, $configFicha)
     {
-        // Regla 1: Mujeres de TICS (TI) no pagan
-        if ($alumno['carrera'] == 'TI' && $alumno['sexo'] == 'M') {
-            return 0.00;
+        $montoBase = floatval($configFicha['monto']);
+
+        if ($configFicha['calculo_monto'] == 0) {
+            return $montoBase;
         }
 
-        // Regla 2: Reincorporados pagan tarifa especial
-        if ($alumno['estatus'] == 'REINCORPORADO') {
-            return 1561.00;
+        if ($alumno['carrera'] === 'TI' && $alumno['sexo'] === 'M') {
+            return 1.00;
         }
 
-        // Regla 3: Todos los demás pagan el monto base
-        return floatval($montoBase);
+        if ($alumno['id_estatus'] == 3) {
+            return floatval($configFicha['monto_reincorporado']);
+        }
+
+        return $montoBase;
     }
 }
-?>
