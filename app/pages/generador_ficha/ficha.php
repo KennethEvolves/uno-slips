@@ -22,7 +22,10 @@ if ($id_ficha === 0) {
     die("Error: No se seleccionó una ficha válida.");
 }
 
-$sqlFicha = "SELECT * FROM ficha_licenciatura WHERE id = $id_ficha LIMIT 1";
+$sqlFicha = "SELECT f.*, n.descripcion_nota, n.horario_atencion 
+             FROM ficha_licenciatura f
+             LEFT JOIN cat_notas n ON f.id_nota = n.id_nota
+             WHERE f.id = $id_ficha LIMIT 1";
 $resFicha = mysqli_query($con, $sqlFicha);
 $datosFicha = mysqli_fetch_assoc($resFicha);
 if (!$datosFicha)
@@ -87,6 +90,9 @@ $montoFormato = '$' . number_format($montoFinal, 2) . ' MXN';
 
 $referencia = IdiomaHelper::generarReferencia($datosFicha['concepto'], $matricula);
 mysqli_close($con);
+
+$notaFinal = $datosFicha['descripcion_nota'] ?? "Favor de contactar a Contabilidad.";
+$horarioFinal = $datosFicha['horario_atencion'] ?? "Lunes a Viernes de 9:00 a 13:00 hrs.";
 
 
 class MYPDF extends TCPDF
@@ -209,10 +215,10 @@ $html = '
             </span>
             <br><br>
             <span style="color:#444; font-size:8pt; line-height: 1.3; text-align:justify;">
-            <b>Nota:</b> Es obligatorio cambiar el voucher original de la ficha, en el Departamento de Contabilidad. En caso de no entregar el voucher, no se reconocerá el pago realizado. El cambio de las fichas NO es PERSONAL, puede pasar cualquier persona a realizar el cambio.
+            <b>Nota:</b> ' . $notaFinal . '
             <br><br>
             <b>Horario de atención de Contabilidad:</b><br>
-            Lunes a Viernes: 9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 4:30 p.m.
+            ' . $horarioFinal . '
             </span>
         </td>
     </tr>
