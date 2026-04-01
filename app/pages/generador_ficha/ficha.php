@@ -44,7 +44,7 @@ if (empty($matricula))
     die("Por favor ingresa una matrícula.");
 
 $matricula = mysqli_real_escape_string($con, $matricula);
-$sqlAlu = "SELECT a.*, e.nombre_estatus
+$sqlAlu = "SELECT a.*, e.nombre_estatus, a.es_exento
            FROM alumnos_activos a
            INNER JOIN estatus e ON a.id_estatus = e.id_estatus
            WHERE a.matricula = '$matricula' LIMIT 1";
